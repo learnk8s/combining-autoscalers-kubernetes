@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: podinfo
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: podinfo
+  template:
+    metadata:
+      labels:
+        app: podinfo
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+              - matchExpressions:
+                  - key: node
+                    operator: NotIn
+                    values:
+                      - primary
+      containers:
+        - name: podinfo
+          image: stefanprodan/podinfo
+          ports:
+            - containerPort: 9898
+          resources:
+            requests:
+              # memory: 2.8G
+              memory: 1G
+              cpu: 250m

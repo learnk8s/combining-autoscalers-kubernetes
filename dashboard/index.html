@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>K8bit</title>
+  <link rel="stylesheet" href="https://unpkg.com/tachyons@4.10.0/css/tachyons.min.css" />
+  <style>
+    div[data-tooltip]:before {
+      content: "";
+      position: absolute;
+      top: 0;
+      border-top: 0.5em solid #357EDD;
+      border-left: 0.5em solid transparent;
+      border-right: 0.5em solid transparent;
+      display: none;
+    }
+
+    div[data-tooltip]:after {
+      content: attr(data-tooltip);
+      position: absolute;
+      color: white;
+      top: -1.5em;
+      left: -1em;
+      background: #357EDD;
+      padding: .25em .75em;
+      border-radius: .5em;
+      white-space: nowrap;
+      display: none;
+    }
+
+    div[data-tooltip]:hover:before,
+    div[data-tooltip]:hover:after {
+      display: inline;
+    }
+  </style>
+</head>
+
+<body class="h-min-100 bg-near-black sans-serif">
+  <div class="mw9 center">
+    <div class="pa3 flex items-center justify-center">
+      <div>
+        <button class="bn bg-dark-gray moon-gray f7 ttu pv1 ph2 br1 b pointer" id="go-1">Scale to 1</button>
+        <div class="pv1"></div>
+        <button class="bn bg-yellow pv2 ph3 br2 b ttu hover-bg-gold pointer" id="go-5">Scale to 5</button>
+        <div class="pv1"></div>
+        <button class="bn bg-yellow pv2 ph3 br2 b ttu hover-bg-gold pointer" id="go-9">Scale to 9</button>
+      </div>
+      <div class="tc pl3">
+        <p class="mv0 f2 white b w5 code" id="timer">00:00:00</p>
+        <p class="mv0 f6 near-white b ttu">time elapsed</p>
+      </div>
+    </div>
+  </div>
+  <div id="content" class="flex"></div>
+  <script src='app.js'></script>
+</body>
+
+</html>
