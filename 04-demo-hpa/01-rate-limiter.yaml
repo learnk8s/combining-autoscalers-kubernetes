@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: podinfo
 spec:
-  replicas: 3
+  replicas: 4
   selector:
     matchLabels:
       app: podinfo
@@ -11,11 +11,13 @@ spec:
     metadata:
       labels:
         app: podinfo
+      annotations:
+        prometheus.io/scrape: "true"
     spec:
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-              nodeSelectorTerms:
+            nodeSelectorTerms:
               - matchExpressions:
                   - key: node
                     operator: NotIn
@@ -23,11 +25,22 @@ spec:
                       - primary
       containers:
         - name: podinfo
-          image: stefanprodan/podinfo
+          image: learnk8s/rate-limiter:1.0.0
+          imagePullPolicy: Always
+          args: ["/app/index.js", "10"]
           ports:
-            - containerPort: 9898
+            - containerPort: 8080
           resources:
             requests:
-              # memory: 2.8G
-              memory: 1G
-              cpu: 250m
+              memory: 0.9G
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: podinfo
+spec:
+  ports:
+    - port: 80
+      targetPort: 8080
+  selector:
+    app: podinfo

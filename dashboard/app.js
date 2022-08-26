@@ -188,9 +188,14 @@ function App() {
           .sort((a, b) => a.name.localeCompare(b.name))
           .filter(
             (it) =>
-              !["calico", "csi", "kube-proxy", "coredns"].some((prefix) =>
-                it.name.startsWith(prefix)
-              )
+              ![
+                "calico",
+                "csi",
+                "kube-proxy",
+                "coredns",
+                "locust",
+                "prom",
+              ].some((prefix) => it.name.startsWith(prefix))
           );
         return [
           '<li class="mh2">',

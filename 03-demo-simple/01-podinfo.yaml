@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: podinfo
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: podinfo
+  template:
+    metadata:
+      labels:
+        app: podinfo
+      annotations:
+        prometheus.io/scrape: "true"
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: node
+                    operator: NotIn
+                    values:
+                      - primary
+      containers:
+        - name: podinfo
+          image: stefanprodan/podinfo
+          ports:
+            - containerPort: 9898
+          resources:
+            requests:
+              memory: 0.9G
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: podinfo
+spec:
+  ports:
+    - port: 80
+      targetPort: 9898
+  selector:
+    app: podinfo

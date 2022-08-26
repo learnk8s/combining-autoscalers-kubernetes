@@ -1,0 +1,20 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+ name: podinfo
+spec:
+ scaleTargetRef:
+   kind: Deployment
+   name: podinfo
+ minReplicaCount: 4
+ maxReplicaCount: 30
+ cooldownPeriod: 30
+ pollingInterval: 1
+ triggers:
+ - type: prometheus
+   metadata:
+     serverAddress: http://prometheus-server
+     metricName: connections_active_keda
+     query: |
+       sum(increase(http_requests_total{app="podinfo"}[60s]))
+     threshold: "420" # 8rps * 60s

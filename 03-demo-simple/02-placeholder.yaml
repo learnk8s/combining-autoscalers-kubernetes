@@ -26,5 +26,5 @@ spec:
           image: k8s.gcr.io/pause
           resources:
             requests:
-              cpu: 1000m
+              cpu: 900m
               memory: 3.9G
