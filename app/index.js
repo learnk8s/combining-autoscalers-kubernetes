@@ -4,7 +4,7 @@ const port = Number.isFinite(parseInt(process.env.PORT, 10))
   : 8080;
 
 let counter = 0;
-const queue = new Map();
+let requestsForCurrentWindow = 0;
 
 const arg = parseFloat(process.argv.slice(2)[0]);
 const rps = Number.isFinite(arg) ? arg : 1;
@@ -26,7 +26,8 @@ const requestListener = function (req, res) {
     }
     default:
       counter++;
-      queue.set(res);
+      requestsForCurrentWindow++;
+      reply(res);
       break;
   }
 };
@@ -37,13 +38,16 @@ server.listen(port);
 console.log(`Starting server http://localhost:${port} with ${rps} rps`);
 
 setInterval(() => {
-  if (queue.size === 0) {
-    return;
-  }
-
-  const res = queue.keys().next().value;
-
-  queue.delete(res);
-
-  res.end("OK");
+  requestsForCurrentWindow = 0;
 }, 1000 / rps);
+
+function reply(res, retryAttempt = 0) {
+  if (requestsForCurrentWindow > rps) {
+    setTimeout(
+      () => reply(res, retryAttempt + 1),
+      Math.pow(2, retryAttempt) * 1000
+    );
+  } else {
+    res.end("OK");
+  }
+}
