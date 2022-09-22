@@ -43,7 +43,7 @@ Make sure that your kubectl is configured with the current kubeconfig file:
 export KUBECONFIG="${PWD}/kubeconfig"
 ```
 
-The execute:
+Then execute:
 
 ```bash
 kubectl apply -f 03-demo-simple/01-podinfo.yaml
@@ -71,7 +71,8 @@ Repeat the experiment. The total scaling time should go down to ~10s.
 ## Dashboard
 
 ```bash
-kubectl proxy --www=./dashboard
+kubectl proxy --www=./dashboard --www-prefix=/static &
+open http://localhost:8001/static
 ```
 
 ## HPA demo
