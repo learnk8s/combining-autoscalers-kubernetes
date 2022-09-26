@@ -288,6 +288,12 @@ document
 document
   .querySelector("#go-9")
   ?.addEventListener("click", createEventListener(9));
+document
+  .querySelector("#placeholder-1")
+  ?.addEventListener("click", createPlaceholderEventListener(1));
+document
+  .querySelector("#placeholder-0")
+  ?.addEventListener("click", createPlaceholderEventListener(0));
 
 function createEventListener(replicas) {
   return (e) => {
@@ -310,6 +316,20 @@ function createEventListener(replicas) {
         startTime = undefined;
       }
     }, 16);
+  };
+}
+
+function createPlaceholderEventListener(replicas) {
+  return (e) => {
+    startTime = Date.now();
+    timer.innerHTML = `00:00:00`;
+    fetch("/apis/apps/v1/namespaces/default/deployments/overprovisioning", {
+      method: "PATCH",
+      body: JSON.stringify({ spec: { replicas } }),
+      headers: {
+        "Content-Type": "application/strategic-merge-patch+json",
+      },
+    }).then((response) => response.json());
   };
 }
 
