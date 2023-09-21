@@ -25,6 +25,10 @@ terraform -chdir=02-setup apply -auto-approve
 # Scale to 2 nodes
 linode-cli lke pool-update <cluster id> <pool id> --count 2 # cluster 1
 
+# # Disable scaling down (you can't label nodes in LKE)
+# kubectl annotate node <node1> cluster-autoscaler.kubernetes.io/scale-down-disabled=true
+# kubectl annotate node <node1> cluster-autoscaler.kubernetes.io/scale-down-disabled=true
+
 # Cleanup
 terraform -chdir=02-setup destroy -auto-approve
 terraform -chdir=01-clusters destroy -auto-approve

@@ -3,3 +3,9 @@ module "label_standard" {
 
   kubeconfig_path = abspath("../kubeconfig")
 }
+
+module "autoscaling_hpa" {
+  source = "../modules/autoscaling"
+
+  kubeconfig_path = abspath("../kubeconfig")
+}
