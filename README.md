@@ -1,4 +1,4 @@
-# Proactive cluster autoscaling in Kubernetes
+# Kubernetes scaling strategies
 
 This project helps you create a cluster with idle nodes ready to deploy new workloads.
 
