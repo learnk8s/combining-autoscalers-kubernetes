@@ -1,0 +1,15 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: cron-scaledobject
+  namespace: default
+spec:
+  scaleTargetRef:
+    name: podinfo
+  triggers:
+    - type: cron
+      metadata:
+        timezone: Europe/London
+        start: 30 * * * *
+        end: 45 * * * *
+        desiredReplicas: "5"

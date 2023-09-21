@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: podinfo
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: podinfo
+  template:
+    metadata:
+      labels:
+        app: podinfo
+      annotations:
+        prometheus.io/scrape: "true"
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: node
+                    operator: NotIn
+                    values:
+                      - primary
+      containers:
+        - name: podinfo
+          image: learnk8s/rate-limiter:1.0.0
+          imagePullPolicy: Always
+          args: ["/app/index.js", "10"]
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: 0.9G
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: podinfo
+spec:
+  ports:
+    - port: 80
+      targetPort: 8080
+  selector:
+    app: podinfo

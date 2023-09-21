@@ -209,7 +209,7 @@ function App() {
         ].join("");
       });
 
-    content.innerHTML = `<ul class="list pl0 flex flex-wrap center">${nodeTemplates.join(
+    content.innerHTML = `<ul class="list pl0 flex flex-column justify-center center">${nodeTemplates.join(
       ""
     )}</ul>`;
 
