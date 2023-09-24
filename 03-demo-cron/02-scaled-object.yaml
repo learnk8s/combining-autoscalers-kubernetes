@@ -4,6 +4,8 @@ metadata:
   name: cron-scaledobject
   namespace: default
 spec:
+  maxReplicaCount: 10
+  minReplicaCount: 1
   scaleTargetRef:
     name: podinfo
   triggers:
@@ -13,9 +15,3 @@ spec:
         start: 3 * * * *
         end: 4 * * * *
         desiredReplicas: "5"
-    - type: cron
-      metadata:
-        timezone: Europe/London
-        start: 4 * * * *
-        end: 5 * * * *
-        desiredReplicas: "1"
