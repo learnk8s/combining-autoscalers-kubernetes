@@ -94,8 +94,10 @@ Scale back to 1 and submit the placeholder pod with:
 
 ```bash
 kubectl scale deployment/podinfo --replicas=1
-kubectl apply -f 03-demo-simple/02-placeholder.yaml
+kubectl apply -f 04-demo-proactive/02-placeholder.yaml
 ```
+
+Click on the scale button to scale up to 5. Then show the new node is being provisioned.
 
 Repeat the experiment. The total scaling time should go down to ~10s.
 
