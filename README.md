@@ -1,4 +1,4 @@
-# Proactive cluster autoscaling in Kubernetes
+# Kubernetes scaling strategies
 
 This project helps you create a cluster with idle nodes ready to deploy new workloads.
 
@@ -22,9 +22,12 @@ terraform -chdir=01-clusters apply -auto-approve
 terraform -chdir=02-setup init
 terraform -chdir=02-setup apply -auto-approve
 
-# Scale to 3 nodes
-linode-cli lke pool-update <cluster id> <pool id> --count 3 # cluster 1
-linode-cli lke pool-update <cluster id> <pool id> --count 3 # cluster 2
+# Scale to 2 nodes
+linode-cli lke pool-update <cluster id> <pool id> --count 2 # cluster 1
+
+# # Disable scaling down (you can't label nodes in LKE)
+# kubectl annotate node <node1> cluster-autoscaler.kubernetes.io/scale-down-disabled=true
+# kubectl annotate node <node1> cluster-autoscaler.kubernetes.io/scale-down-disabled=true
 
 # Cleanup
 terraform -chdir=02-setup destroy -auto-approve
@@ -35,7 +38,35 @@ _Why scale to 3 nodes after the first step?_
 
 This is to ensure that all LKE's controllers end up in the same node, and you can uniquely tag that node.
 
-## Demo the overprovisioning
+## Demo the cron scaling
+
+Make sure that your kubectl is configured with the current kubeconfig file:
+
+```bash
+export KUBECONFIG="${PWD}/kubeconfig"
+```
+
+The execute:
+
+```bash
+kubectl apply -f 03-demo-cron/01-podinfo.yaml
+```
+
+Amend the time to be 1 minute in the future.
+
+Submit the ScaledObject:
+
+```bash
+kubectl apply -f 03-demo-cron/02-scaled-object.yaml
+```
+
+## Dashboard
+
+```bash
+kubectl proxy --www=./dashboard
+```
+
+## Placeholder demo
 
 Make sure that your kubectl is configured with the current kubeconfig file:
 
@@ -46,7 +77,7 @@ export KUBECONFIG="${PWD}/kubeconfig"
 Then execute:
 
 ```bash
-kubectl apply -f 03-demo-simple/01-podinfo.yaml
+kubectl apply -f 04-demo-proactive/01-podinfo.yaml
 ```
 
 When ready, observe the node scaling up with:
@@ -63,17 +94,16 @@ Scale back to 1 and submit the placeholder pod with:
 
 ```bash
 kubectl scale deployment/podinfo --replicas=1
-kubectl apply -f 03-demo-simple/02-placeholder.yaml
+kubectl apply -f 04-demo-proactive/02-placeholder.yaml
 ```
 
-Repeat the experiment. The total scaling time should go down to ~10s.
-
-## Dashboard
+Click on the scale button to scale up to 5. Then show the new node is being provisioned.
 
 ```bash
 kubectl proxy --www=./dashboard --www-prefix=/static &
 open http://localhost:8001/static
 ```
+Repeat the experiment. The total scaling time should go down to ~10s.
 
 ## HPA demo
 
@@ -86,8 +116,8 @@ export KUBECONFIG="${PWD}/kubeconfig-hpa"
 Then execute:
 
 ```bash
-kubectl apply -f 04-demo-hpa/01-rate-limiter.yaml
-kubectl apply -f 04-demo-hpa/03-scaled-object.yaml
+kubectl apply -f 05-demo-hpa/01-rate-limiter.yaml
+kubectl apply -f 05-demo-hpa/03-scaled-object.yaml
 ```
 
 At this point, you should have at least two nodes. One has four podinfo pods.
@@ -109,7 +139,7 @@ Drive traffic to the instance:
 Repeat the experiment.
 
 ```bash
-kubectl delete -f 04-demo-hpa/03-scaled-object.yaml
+kubectl delete -f 05-demo-hpa/03-scaled-object.yaml
 kubectl scale deployment/podinfo --replicas=1
 ```
 
@@ -118,7 +148,7 @@ Wait for the Cluster autoscaler to drain the nodes. By the end, you should have 
 Submit the placeholder pod:
 
 ```bash
-kubectl apply -f 04-demo-hpa/placeholder.yaml
+kubectl apply -f 05-demo-hpa/placeholder.yaml
 ```
 
 The pod stays Pending until the cluster autoscaler creates the third node.

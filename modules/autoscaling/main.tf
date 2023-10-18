@@ -2,11 +2,11 @@ terraform {
   required_providers {
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "2.12.1"
+      version = "2.23.0"
     }
     helm = {
       source  = "hashicorp/helm"
-      version = "2.6.0"
+      version = "2.11.0"
     }
   }
 }
@@ -32,7 +32,7 @@ locals {
 
 resource "helm_release" "keda" {
   name      = "keda"
-  chart     = "https://kedacore.github.io/charts/keda-2.7.2.tgz"
+  chart     = "https://kedacore.github.io/charts/keda-2.11.2.tgz"
   namespace = local.keda_namespace
   depends_on = [
     null_resource.node_label
@@ -47,7 +47,7 @@ resource "null_resource" "node_label" {
 
 resource "helm_release" "prometheus" {
   name      = "prometheus"
-  chart     = "https://github.com/prometheus-community/helm-charts/releases/download/prometheus-15.11.0/prometheus-15.11.0.tgz"
+  chart     = "https://github.com/prometheus-community/helm-charts/releases/download/prometheus-25.0.0/prometheus-25.0.0.tgz"
   namespace = local.prometheus_namespace
 
   set {

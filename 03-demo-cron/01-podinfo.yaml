@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: podinfo
 spec:
-  replicas: 4
+  replicas: 1
   selector:
     matchLabels:
       app: podinfo
@@ -25,11 +25,9 @@ spec:
                       - primary
       containers:
         - name: podinfo
-          image: learnk8s/rate-limiter:1.0.0
-          imagePullPolicy: Always
-          args: ["/app/index.js", "10"]
+          image: stefanprodan/podinfo
           ports:
-            - containerPort: 8080
+            - containerPort: 9898
           resources:
             requests:
               memory: 0.9G
@@ -41,6 +39,6 @@ metadata:
 spec:
   ports:
     - port: 80
-      targetPort: 8080
+      targetPort: 9898
   selector:
     app: podinfo

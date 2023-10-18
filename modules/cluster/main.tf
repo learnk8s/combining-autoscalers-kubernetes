@@ -2,7 +2,7 @@ terraform {
   required_providers {
     linode = {
       source  = "linode/linode"
-      version = "1.28.0"
+      version = "2.7.2"
     }
   }
 }
@@ -17,7 +17,7 @@ variable "region" {
 
 resource "linode_lke_cluster" "this" {
   label       = var.name
-  k8s_version = "1.23"
+  k8s_version = "1.26"
   region      = var.region
 
   pool {
