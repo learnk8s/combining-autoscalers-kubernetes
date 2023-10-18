@@ -74,7 +74,7 @@ Make sure that your kubectl is configured with the current kubeconfig file:
 export KUBECONFIG="${PWD}/kubeconfig"
 ```
 
-The execute:
+Then execute:
 
 ```bash
 kubectl apply -f 04-demo-proactive/01-podinfo.yaml
@@ -99,6 +99,10 @@ kubectl apply -f 04-demo-proactive/02-placeholder.yaml
 
 Click on the scale button to scale up to 5. Then show the new node is being provisioned.
 
+```bash
+kubectl proxy --www=./dashboard --www-prefix=/static &
+open http://localhost:8001/static
+```
 Repeat the experiment. The total scaling time should go down to ~10s.
 
 ## HPA demo
